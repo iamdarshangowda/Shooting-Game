@@ -1,108 +1,94 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import GameLayout from "./GameLayout";
 
 export default function GameArea() {
-  const [playerOne, setPlayerOne] = useState({
+  const initialScore = {
     isNext: true,
     health: 100,
-  });
+  };
 
-  const [playerTwo, setPlayerTwo] = useState({
-    isNext: true,
-    health: 100,
-  });
+  const [playerOne, setPlayerOne] = useState(initialScore);
+  const [playerTwo, setPlayerTwo] = useState(initialScore);
 
   const [playerOneScore, setplayerOneScore] = useState(0);
   const [playerTwoScore, setplayerTwoScore] = useState(0);
 
   const [round, setRound] = useState(1);
+  const [winner, setWinner] = useState({
+    gameOver: false,
+    game: "",
+  });
+
+  function random() {
+    return Math.floor(Math.random() * 6);
+  }
+
+  function checkHealth() {
+    return playerTwo.health < 0
+      ? setplayerOneScore((prev) => prev + 1)
+      : setplayerTwoScore((prev) => prev + 1);
+  }
 
   function playerOneShoot() {
     if (playerOne.health > 0 && playerTwo.health > 0) {
-      const random = Math.floor(Math.random() * 40);
       setPlayerTwo((prev) => ({
         ...prev,
         isNext: true,
-        health: playerTwo.health - random,
+        health: prev.health - random(),
       }));
       setPlayerOne((prev) => ({
         ...prev,
         isNext: false,
       }));
-    } else if (round < 5) {
-      playerOne.health <= 0
-        ? setplayerTwoScore((prev) => prev + 1)
-        : setplayerOneScore((prev) => prev + 1);
-      setPlayerOne({
-        isNext: true,
-        health: 100,
-      });
-      setPlayerTwo({
-        isNext: true,
-        health: 100,
-      });
+    } else if (round <= 5 && playerOneScore + playerTwoScore < 4) {
+      setPlayerOne(initialScore);
+      setPlayerTwo(initialScore);
+      setRound((prev) => prev + 1);
+      checkHealth();
     } else {
-      setplayerTwoScore(0);
-      setplayerOneScore(0);
       setRound(1);
-      setPlayerOne({
-        isNext: true,
-        health: 100,
-      });
-      setPlayerTwo({
-        isNext: true,
-        health: 100,
-      });
+      setPlayerOne(initialScore);
+      setPlayerTwo(initialScore);
+      playerOneScore < playerTwoScore
+        ? setWinner((prev) => ({ ...prev, gameOver: true, game: 2 }))
+        : setWinner((prev) => ({ ...prev, gameOver: true, game: 1 }));
+      setplayerOneScore(0);
+      setplayerTwoScore(0);
     }
   }
 
   function playerTwoShoot() {
     if (playerOne.health > 0 && playerTwo.health > 0) {
-      const random = Math.floor(Math.random() * 40);
       setPlayerOne((prev) => ({
         ...prev,
         isNext: true,
-        health: playerOne.health - random,
+        health: playerOne.health - random(),
       }));
       setPlayerTwo((prev) => ({
         ...prev,
         isNext: false,
       }));
-    } else if (round < 5) {
-      playerOne.health <= 0
-        ? setplayerTwoScore((prev) => prev + 1)
-        : setplayerOneScore((prev) => prev + 1);
+    } else if (round <= 5 && playerOneScore + playerTwoScore < 4) {
+      setPlayerOne(initialScore);
+      setPlayerTwo(initialScore);
       setRound((prev) => prev + 1);
-      setPlayerOne({
-        isNext: true,
-        health: 100,
-      });
-      setPlayerTwo({
-        isNext: true,
-        health: 100,
-      });
+      checkHealth();
     } else {
-      setplayerTwoScore(0);
-      setplayerOneScore(0);
       setRound(1);
-      setPlayerOne({
-        isNext: true,
-        health: 100,
-      });
-      setPlayerTwo({
-        isNext: true,
-        health: 100,
-      });
+      setPlayerOne(initialScore);
+      setPlayerTwo(initialScore);
+      playerOneScore < playerTwoScore
+        ? setWinner((prev) => ({ ...prev, gameOver: true, game: 2 }))
+        : setWinner((prev) => ({ ...prev, gameOver: true, game: 1 }));
+      setplayerOneScore(0);
+      setplayerTwoScore(0);
     }
   }
-
-  const styleOne = {
-    background: playerOne.health < 20 ? "red" : "blue",
-  };
 
   return (
     <GameLayout
       round={round}
+      winner={winner}
       playerOne={playerOne}
       playerTwo={playerTwo}
       shootOne={playerOneShoot}

@@ -19,7 +19,6 @@ export default function GameLayout(props) {
               min="0"
               max="100"
             ></progress>
-            <span className="health-data">{props.playerOne.health}%</span>
           </div>
           <button
             className="shoot-btn"
@@ -42,7 +41,6 @@ export default function GameLayout(props) {
               min="0"
               max="100"
             ></progress>
-            <span className="health-data">{props.playerTwo.health}%</span>
           </div>
           <button
             className="shoot-btn"
@@ -62,7 +60,7 @@ export default function GameLayout(props) {
           Player 2 : <span>{props.playerTwoScore} Points</span>
         </p>
       </section>
-      <h2>Player {props.num} Won!</h2>
+      {props.winner.gameOver && <h2>Player {props.winner.game} Won!</h2>}
       <Link to="/">
         <button className="btn">Exit Game</button>
       </Link>
