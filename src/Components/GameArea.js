@@ -14,23 +14,25 @@ export default function GameArea() {
   const [playerTwoScore, setplayerTwoScore] = useState(0);
 
   const [round, setRound] = useState(1);
-  const [winner, setWinner] = useState({
-    gameOver: false,
-    game: "",
-  });
+  const [winner, setWinner] = useState({});
 
   function random() {
     return Math.floor(Math.random() * 6);
   }
 
   function checkHealth() {
-    return playerTwo.health < 0
+    return playerTwo.health <= 0
       ? setplayerOneScore((prev) => prev + 1)
       : setplayerTwoScore((prev) => prev + 1);
   }
 
   function playerOneShoot() {
-    if (playerOne.health > 0 && playerTwo.health > 0) {
+    if (
+      playerOne.health > 0 &&
+      playerTwo.health > 0 &&
+      playerOneScore < 3 &&
+      playerTwoScore < 3
+    ) {
       setPlayerTwo((prev) => ({
         ...prev,
         isNext: true,
@@ -40,25 +42,36 @@ export default function GameArea() {
         ...prev,
         isNext: false,
       }));
-    } else if (round <= 5 && playerOneScore + playerTwoScore < 4) {
+      setWinner({
+        gameOver: false,
+        game: "",
+      });
+    } else if (playerOneScore < 3 && playerTwoScore < 3) {
       setPlayerOne(initialScore);
       setPlayerTwo(initialScore);
       setRound((prev) => prev + 1);
       checkHealth();
-    } else {
+    } else if (playerOneScore === 3 || playerTwoScore === 3) {
       setRound(1);
       setPlayerOne(initialScore);
       setPlayerTwo(initialScore);
-      playerOneScore < playerTwoScore
-        ? setWinner((prev) => ({ ...prev, gameOver: true, game: 2 }))
-        : setWinner((prev) => ({ ...prev, gameOver: true, game: 1 }));
+      setWinner((prev) => ({
+        ...prev,
+        gameOver: true,
+        game: playerOneScore < playerTwoScore ? 2 : 1,
+      }));
       setplayerOneScore(0);
       setplayerTwoScore(0);
     }
   }
 
   function playerTwoShoot() {
-    if (playerOne.health > 0 && playerTwo.health > 0) {
+    if (
+      playerOne.health > 0 &&
+      playerTwo.health > 0 &&
+      playerOneScore < 3 &&
+      playerTwoScore < 3
+    ) {
       setPlayerOne((prev) => ({
         ...prev,
         isNext: true,
@@ -68,18 +81,24 @@ export default function GameArea() {
         ...prev,
         isNext: false,
       }));
-    } else if (round <= 5 && playerOneScore + playerTwoScore < 4) {
+      setWinner({
+        gameOver: false,
+        game: "",
+      });
+    } else if (playerOneScore < 3 && playerTwoScore < 3) {
       setPlayerOne(initialScore);
       setPlayerTwo(initialScore);
       setRound((prev) => prev + 1);
       checkHealth();
-    } else {
+    } else if (playerOneScore === 3 || playerTwoScore === 3) {
       setRound(1);
       setPlayerOne(initialScore);
       setPlayerTwo(initialScore);
-      playerOneScore < playerTwoScore
-        ? setWinner((prev) => ({ ...prev, gameOver: true, game: 2 }))
-        : setWinner((prev) => ({ ...prev, gameOver: true, game: 1 }));
+      setWinner((prev) => ({
+        ...prev,
+        gameOver: true,
+        game: playerOneScore < playerTwoScore ? 2 : 1,
+      }));
       setplayerOneScore(0);
       setplayerTwoScore(0);
     }
