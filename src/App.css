@@ -39,6 +39,11 @@ h1 {
   padding: 10px;
   background: goldenrod;
   border-radius: 6px;
+  width: 130px;
+}
+
+.btn:hover {
+  background-color: orangered;
 }
 
 .game-container {
@@ -95,4 +100,14 @@ h1 {
 .health-data {
   font-size: 18px;
   margin-left: 5px;
+}
+
+.lastRound {
+  font-size: 25px;
+  color: red;
+}
+
+.roundInfo {
+  font-size: 25px;
+  color: green;
 }

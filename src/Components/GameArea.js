@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import GameLayout from "./GameLayout";
 
 export default function GameArea() {
@@ -10,28 +10,51 @@ export default function GameArea() {
   const [playerOne, setPlayerOne] = useState(initialScore);
   const [playerTwo, setPlayerTwo] = useState(initialScore);
 
-  const [playerOneScore, setplayerOneScore] = useState(0);
-  const [playerTwoScore, setplayerTwoScore] = useState(0);
+  const [playerOneScore, setplayerOneScore] = useState(
+    Number(localStorage.getItem("player1") || 0)
+  );
+  const [playerTwoScore, setplayerTwoScore] = useState(
+    Number(localStorage.getItem("player2") || 0)
+  );
 
-  const [round, setRound] = useState(1);
-  const [winner, setWinner] = useState({});
+  const [round, setRound] = useState(
+    Number(localStorage.getItem("round") || 1)
+  );
+  const [winner, setWinner] = useState({
+    gameOver: false,
+    game: "",
+  });
+
+  function setPlayerOneScoreHandeler(playerOneScore) {
+    setplayerOneScore(playerOneScore);
+    localStorage.setItem("player1", JSON.stringify(playerOneScore));
+  }
+  function setPlayerTwoScoreHandeler(playerTwoScore) {
+    setplayerTwoScore(playerTwoScore);
+    localStorage.setItem("player2", JSON.stringify(playerTwoScore));
+  }
+
+  function setRoundHandeler(round) {
+    setRound(round);
+    localStorage.setItem("round", JSON.stringify(round));
+  }
 
   function random() {
-    return Math.floor(Math.random() * 6);
+    return Math.floor(Math.random() * 50);
   }
 
   function checkHealth() {
     return playerTwo.health <= 0
-      ? setplayerOneScore((prev) => prev + 1)
-      : setplayerTwoScore((prev) => prev + 1);
+      ? setPlayerOneScoreHandeler(playerOneScore + 1)
+      : setPlayerTwoScoreHandeler(playerTwoScore + 1);
   }
 
   function playerOneShoot() {
     if (
       playerOne.health > 0 &&
       playerTwo.health > 0 &&
-      playerOneScore < 3 &&
-      playerTwoScore < 3
+      playerOneScore < 2 &&
+      playerTwoScore < 2
     ) {
       setPlayerTwo((prev) => ({
         ...prev,
@@ -42,26 +65,13 @@ export default function GameArea() {
         ...prev,
         isNext: false,
       }));
-      setWinner({
-        gameOver: false,
-        game: "",
-      });
-    } else if (playerOneScore < 3 && playerTwoScore < 3) {
+    } else if (playerOneScore < 2 && playerTwoScore < 2) {
       setPlayerOne(initialScore);
       setPlayerTwo(initialScore);
-      setRound((prev) => prev + 1);
+      setRoundHandeler(round + 1);
       checkHealth();
-    } else if (playerOneScore === 3 || playerTwoScore === 3) {
-      setRound(1);
-      setPlayerOne(initialScore);
-      setPlayerTwo(initialScore);
-      setWinner((prev) => ({
-        ...prev,
-        gameOver: true,
-        game: playerOneScore < playerTwoScore ? 2 : 1,
-      }));
-      setplayerOneScore(0);
-      setplayerTwoScore(0);
+    } else if (playerOneScore === 2 || playerTwoScore === 2) {
+      checkWinner();
     }
   }
 
@@ -69,8 +79,8 @@ export default function GameArea() {
     if (
       playerOne.health > 0 &&
       playerTwo.health > 0 &&
-      playerOneScore < 3 &&
-      playerTwoScore < 3
+      playerOneScore < 2 &&
+      playerTwoScore < 2
     ) {
       setPlayerOne((prev) => ({
         ...prev,
@@ -81,27 +91,35 @@ export default function GameArea() {
         ...prev,
         isNext: false,
       }));
-      setWinner({
-        gameOver: false,
-        game: "",
-      });
-    } else if (playerOneScore < 3 && playerTwoScore < 3) {
+    } else if (playerOneScore < 2 && playerTwoScore < 2) {
       setPlayerOne(initialScore);
       setPlayerTwo(initialScore);
-      setRound((prev) => prev + 1);
+      setRoundHandeler(round + 1);
       checkHealth();
-    } else if (playerOneScore === 3 || playerTwoScore === 3) {
-      setRound(1);
-      setPlayerOne(initialScore);
-      setPlayerTwo(initialScore);
-      setWinner((prev) => ({
-        ...prev,
-        gameOver: true,
-        game: playerOneScore < playerTwoScore ? 2 : 1,
-      }));
-      setplayerOneScore(0);
-      setplayerTwoScore(0);
+    } else if (playerOneScore === 2 || playerTwoScore === 2) {
+      checkWinner();
     }
+  }
+
+  function checkWinner() {
+    setWinner((prev) => ({
+      ...prev,
+      gameOver: true,
+      game: playerOneScore < playerTwoScore ? 2 : 1,
+    }));
+  }
+
+  function handleReset() {
+    setRoundHandeler(1);
+    setPlayerOne(initialScore);
+    setPlayerTwo(initialScore);
+    setPlayerOneScoreHandeler(0);
+    setPlayerTwoScoreHandeler(0);
+    setWinner((prev) => ({
+      ...prev,
+      gameOver: false,
+      game: "",
+    }));
   }
 
   return (
@@ -114,6 +132,7 @@ export default function GameArea() {
       shootTwo={playerTwoShoot}
       playerOneScore={playerOneScore}
       playerTwoScore={playerTwoScore}
+      reset={handleReset}
     />
   );
 }

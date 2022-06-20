@@ -5,6 +5,8 @@ export default function GameLayout(props) {
   return (
     <div className="game-container">
       <h1>Round {props.round}</h1>
+      {props.round === 3 && <span className="lastRound">Last Round</span>}
+      {props.round < 3 && <span className="roundInfo">Total 3 Rounds</span>}
       <div className="players">
         {/*Player One */}
         <section className="player-data">
@@ -64,6 +66,9 @@ export default function GameLayout(props) {
       <Link to="/">
         <button className="btn">Exit Game</button>
       </Link>
+      <button className="btn" onClick={props.reset}>
+        Reset Game
+      </button>
     </div>
   );
 }

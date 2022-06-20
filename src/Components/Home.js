@@ -11,7 +11,7 @@ export default function Home() {
           <h3>About the game</h3>
           <p>
             Shoot random number at opponent and decrease their health. The
-            Player whose health reaches 0, dies and the game ends. There are 5
+            Player whose health reaches 0, dies and the game ends. There are 3
             such rounds, the player with the most game wins, wins the
             tournament.
           </p>
