@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import GameLayout from "./GameLayout";
 
 export default function GameArea() {
@@ -68,7 +68,7 @@ export default function GameArea() {
     } else if (playerOneScore < 2 && playerTwoScore < 2) {
       setPlayerOne(initialScore);
       setPlayerTwo(initialScore);
-      setRoundHandeler(round + 1);
+      round >= 3 ? setRoundHandeler(round) : setRoundHandeler(round + 1);
       checkHealth();
     } else if (playerOneScore === 2 || playerTwoScore === 2) {
       checkWinner();
@@ -94,7 +94,7 @@ export default function GameArea() {
     } else if (playerOneScore < 2 && playerTwoScore < 2) {
       setPlayerOne(initialScore);
       setPlayerTwo(initialScore);
-      setRoundHandeler(round + 1);
+      round >= 3 ? setRoundHandeler(round) : setRoundHandeler(round + 1);
       checkHealth();
     } else if (playerOneScore === 2 || playerTwoScore === 2) {
       checkWinner();
